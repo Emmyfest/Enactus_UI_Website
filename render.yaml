@@ -1,16 +1,14 @@
-# Plan names change over time. Confirm current names in the Render dashboard before deploying.
 databases:
   - name: enactus-ui-db
-    plan: basic-256mb
+    plan: free
     region: oregon
 services:
   - type: web
     name: enactus-ui
     runtime: python
-    region: oregon          # keep identical to the database region (internal URL)
-    plan: starter           # pre-deploy commands need a paid plan
-    buildCommand: ./build.sh
-    preDeployCommand: python manage.py migrate --noinput
+    region: oregon
+    plan: free
+    buildCommand: bash build.sh
     startCommand: gunicorn config.wsgi:application --bind 0.0.0.0:$PORT
     healthCheckPath: /health/
     envVars:
@@ -19,4 +17,7 @@ services:
       - {key: SECRET_KEY, generateValue: true}
       - {key: DATABASE_URL, fromDatabase: {name: enactus-ui-db, property: connectionString}}
       - {key: ALLOWED_HOSTS, value: ""}
-      - {key: CSRF_TRUSTED_ORIGINS, sync: false}
+      - {key: CSRF_TRUSTED_ORIGINS, value: ""}
+      - {key: DJANGO_SUPERUSER_EMAIL, sync: false}
+      - {key: DJANGO_SUPERUSER_FULL_NAME, sync: false}
+      - {key: DJANGO_SUPERUSER_PASSWORD, sync: false}
