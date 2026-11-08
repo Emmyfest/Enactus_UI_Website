@@ -1,0 +1,4 @@
+{% extends 'base.html' %}{% block content %}<div class="eyebrow">Portfolio</div><h1 class="h2">Projects</h1>
+<form method="get" class="campaign-form"><input name="q" value="{{ q }}" placeholder="Search projects"> <button class="btn" type="submit">Search</button></form>
+<div class="cards" style="margin-top:20px">{% for p in projects %}<a class="card glass" href="{% url 'project_detail' p.slug %}"><div class="num">{{ p.get_stage_display|upper }}</div><h3 class="h3">{{ p.name }}</h3><p>{{ p.summary|truncatechars:140 }}</p></a>
+{% empty %}<div class="glass card"><p>No public projects have been published yet.</p></div>{% endfor %}</div>{% endblock %}

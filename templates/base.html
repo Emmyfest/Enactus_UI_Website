@@ -1,0 +1,24 @@
+{% load static %}<!DOCTYPE html>
+<html lang="en" data-theme="dark"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{% block title %}Enactus University of Ibadan{% endblock %}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'css/style.css' %}"></head>
+<body><div class="noise"></div>
+<header class="site-header glass"><div class="header-inner">
+ <a class="brand" href="{% url 'home' %}">
+  <div class="logo"><img src="{% static 'images/branding/ui.png' %}" alt="University of Ibadan" onerror="this.parentElement.style.display='none'"></div>
+  <div class="logo"><img src="{% static 'images/branding/enactus.png' %}" alt="Enactus" onerror="this.parentElement.style.display='none'"></div>
+  <span class="wordmark">ENACTUS&nbsp; UNIVERSITY&nbsp; OF&nbsp; IBADAN</span></a>
+ <nav class="nav"><a href="{% url 'home' %}">Home</a><a href="{% url 'leadership' %}">Leadership</a><a href="{% url 'project_list' %}">Projects</a><a href="{% url 'event_list' %}">Events</a><a href="{% url 'impact' %}">Impact</a><a href="{% url 'news' %}">News</a><a href="{% url 'apply' %}">Join</a>
+  {% if perms.impact.verify_impact or perms.impact.review_report %}<a href="{% url 'impact_queue' %}">Reviews</a>{% endif %}{% if perms.members.review_application %}<a href="{% url 'review' %}">Applications</a>{% endif %}
+  {% if user.is_authenticated %}<a href="{% url 'notifications' %}">Alerts{% if unread_count %} ({{ unread_count }}){% endif %}</a><a href="{% url 'dashboard' %}">Dashboard</a>
+   <form method="post" action="{% url 'logout' %}" style="display:inline">{% csrf_token %}<button class="tab" type="submit">Log out</button></form>
+  {% else %}<a href="{% url 'login' %}">Log in</a>{% endif %}</nav>
+ <div class="header-actions"><button class="theme-toggle" id="themeToggle" aria-label="Toggle light and dark mode"><span>☀</span><span>☾</span><i></i></button></div>
+</div></header>
+<main class="section"><div class="container">
+{% for m in messages %}<div class="glass card" role="status" style="margin-bottom:14px">{{ m }}</div>{% endfor %}
+{% block content %}{% endblock %}</div></main>
+<footer class="footer-bottom">© Enactus University of Ibadan. Institutional platform.</footer>
+<script src="{% static 'js/app.js' %}"></script></body></html>

@@ -1,0 +1,3 @@
+{% extends 'base.html' %}{% block content %}<h1 class="h2">Notifications</h1><form method="post" action="{% url 'mark_all_read' %}">{% csrf_token %}<button class="btn" type="submit">Mark all read</button></form>
+{% for n in items %}<div class="glass card" style="margin-top:12px;{% if not n.read %}border-color:var(--red){% endif %}"><div class="num">{{ n.created|date:"d M H:i" }}</div><p>{% if n.url %}<a href="{{ n.url }}">{{ n.message }}</a>{% else %}{{ n.message }}{% endif %}</p>
+{% if not n.read %}<form method="post" action="{% url 'mark_read' n.pk %}">{% csrf_token %}<button class="tab" type="submit">Mark read</button></form>{% endif %}</div>{% empty %}<div class="glass card"><p>Nothing here yet.</p></div>{% endfor %}{% endblock %}

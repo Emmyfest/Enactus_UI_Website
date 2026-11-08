@@ -1,0 +1,6 @@
+{% extends 'base.html' %}{% block content %}
+<div class="eyebrow">Enactus University of Ibadan</div><h1 class="h1">Entrepreneurial action <span class="red">for people and planet.</span></h1>
+<div class="split" style="margin-top:32px"><div class="glass card"><div class="eyebrow">About</div><p>{{ about }}</p></div>
+<div><div class="glass card" style="margin-bottom:14px"><div class="eyebrow">Mission</div><p>{{ mission }}</p></div><div class="glass card"><div class="eyebrow">Vision</div><p>{{ vision }}</p></div></div></div>
+<div class="hero-actions" style="margin-top:28px"><a class="btn primary" href="{% url 'apply' %}">Join Enactus UI</a><a class="btn" href="{% url 'leadership' %}">Meet the leadership</a></div>
+<p class="note">Editable in Admin → Site settings (keys: about, mission, vision, contact_email).</p>{% endblock %}

@@ -1,0 +1,2 @@
+{% extends 'base.html' %}{% block content %}<h1 class="h2">News and announcements</h1>{% if perms.comms.add_announcement %}<p><a class="btn primary" href="{% url 'announce' %}">New announcement</a></p>{% endif %}
+{% for a in items %}<div class="glass card" style="margin-bottom:14px"><div class="num">{{ a.created|date:"d M Y" }} · {{ a.get_audience_display }}</div><h3 class="h3">{{ a.title }}</h3><p>{{ a.body|linebreaksbr }}</p></div>{% empty %}<div class="glass card"><p>No announcements yet.</p></div>{% endfor %}{% endblock %}

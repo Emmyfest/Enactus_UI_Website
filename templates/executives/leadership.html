@@ -1,0 +1,3 @@
+{% extends 'base.html' %}{% block content %}<div class="eyebrow">Leadership</div><h1 class="h2">{% if admin_term %}{{ admin_term.title }}{% else %}Current administration{% endif %}</h1>
+{% if appts %}<div class="cards">{% for a in appts %}<div class="card glass"><div class="num">{{ a.position.title|upper }}</div><h3 class="h3">{{ a.user.full_name }}</h3></div>{% endfor %}</div>
+{% else %}<div class="glass card"><p>Awaiting verification: no public executive profiles have been approved yet.</p></div>{% endif %}{% endblock %}

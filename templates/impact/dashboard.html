@@ -1,0 +1,5 @@
+{% extends 'base.html' %}{% block content %}<div class="eyebrow">Verified impact</div><h1 class="h2">Impact dashboard</h1>
+<p class="lead">Only figures that passed verification are shown, grouped by type and never merged into one number. Totals add the listed reporting periods for each indicator.</p>
+{% for label,rows in groups %}<div class="glass card" style="margin-top:16px;overflow-x:auto"><div class="eyebrow">{{ label }}</div><table class="tbl"><tr><th>Indicator</th><th>Total</th><th>Periods</th><th>Covering</th></tr>
+{% for r in rows %}<tr><td>{{ r.indicator }}</td><td>{{ r.total|floatformat:"-2" }} {{ r.unit }}</td><td>{{ r.n }}</td><td>{{ r.first }} to {{ r.last }}</td></tr>{% endfor %}</table></div>
+{% empty %}<div class="glass card"><p>No verified impact has been published yet.</p></div>{% endfor %}{% endblock %}

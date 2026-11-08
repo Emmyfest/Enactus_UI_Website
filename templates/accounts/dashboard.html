@@ -1,0 +1,4 @@
+{% extends 'base.html' %}{% block content %}<h1 class="h2">Welcome, {{ user.full_name }}</h1>
+<div class="split"><div class="glass card"><div class="eyebrow">Membership</div><p>{% if profile %}Status: {{ profile.get_status_display }}{% else %}No membership record yet. An account is not the same as approved membership.{% endif %}</p>
+<div class="eyebrow">Roles</div><p>{% for r in roles %}{{ r.name }}{% if not forloop.last %}, {% endif %}{% empty %}None assigned{% endfor %}</p></div>
+<div class="glass card"><div class="eyebrow">Recent sign-ins</div>{% for l in logins %}<p>{{ l.at|date:"d M Y H:i" }}</p>{% endfor %}</div></div>{% endblock %}
