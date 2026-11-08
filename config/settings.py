@@ -5,12 +5,12 @@ BASE_DIR=Path(__file__).resolve().parent.parent
 env=os.environ.get
 DEBUG=env('DEBUG','False')=='True'
 SECRET_KEY=env('SECRET_KEY') or ('dev-only-insecure-key' if DEBUG else None)
-"""if not SECRET_KEY: raise RuntimeError('SECRET_KEY is required when DEBUG is False')
-_host=env('RENDER_EXTERNAL_HOSTNAME')"""
-"""ALLOWED_HOSTS=[h for h in env('ALLOWED_HOSTS','localhost,127.0.0.1').split(',') if h]+([_host] if _host else [])
-CSRF_TRUSTED_ORIGINS=[o for o in env('CSRF_TRUSTED_ORIGINS','').split(',') if o]+([f'https://{_host}'] if _host else [])"""
+if not SECRET_KEY: raise RuntimeError('SECRET_KEY is required when DEBUG is False')
+_host=env('RENDER_EXTERNAL_HOSTNAME')
+ALLOWED_HOSTS=[h for h in env('ALLOWED_HOSTS','localhost,127.0.0.1').split(',') if h]+([_host] if _host else [])
+CSRF_TRUSTED_ORIGINS=[o for o in env('CSRF_TRUSTED_ORIGINS','').split(',') if o]+([f'https://{_host}'] if _host else [])
 INSTALLED_APPS=['django.contrib.admin','django.contrib.auth','django.contrib.contenttypes','django.contrib.sessions','django.contrib.messages','django.contrib.staticfiles','apps.accounts','apps.core','apps.members','apps.executives','apps.projects','apps.events','apps.comms','apps.impact']
-MIDDLEWARE=['django.middleware.security.SecurityMiddleware','whitenoise.middleware.WhiteNoiseMiddleware','django.contrib.sessions.middleware.SessionMiddleware','django.middleware.common.CommonMiddleware','django.middleware.csrf.CsrfViewMiddleware','django.contrib.auth.middleware.AuthenticationMiddleware','django.contrib.messages.middleware.MessageMiddleware','django.middleware.clickjacking.XFrameOptionsMiddleware']
+MIDDLEWARE=['apps.core.middleware.HealthCheckMiddleware','django.middleware.security.SecurityMiddleware','whitenoise.middleware.WhiteNoiseMiddleware','django.contrib.sessions.middleware.SessionMiddleware','django.middleware.common.CommonMiddleware','django.middleware.csrf.CsrfViewMiddleware','django.contrib.auth.middleware.AuthenticationMiddleware','django.contrib.messages.middleware.MessageMiddleware','django.middleware.clickjacking.XFrameOptionsMiddleware']
 ROOT_URLCONF='config.urls'
 WSGI_APPLICATION='config.wsgi.application'
 TEMPLATES=[{'BACKEND':'django.template.backends.django.DjangoTemplates','DIRS':[BASE_DIR/'templates'],'APP_DIRS':True,'OPTIONS':{'context_processors':['django.template.context_processors.request','django.contrib.auth.context_processors.auth','django.contrib.messages.context_processors.messages','apps.comms.context.unread']}}]
