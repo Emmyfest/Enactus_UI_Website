@@ -67,6 +67,9 @@ class IntegrityTests(TestCase):
         Appointment.objects.create(administration=ad,position=po,user=u,start='2025-01-01'); u.is_active=False; u.save()
         self.assertEqual(Appointment.objects.count(),1); self.assertRaises(ProtectedError,po.delete); self.assertRaises(ProtectedError,u.delete)
 class PublicTests(TestCase):
+    def test_health_works_for_unknown_host_but_other_pages_do_not(self):
+       self.assertEqual(self.client.get('/health/',HTTP_HOST='10.228.24.21:10000').status_code,200)
+       self.assertEqual(self.client.get('/',HTTP_HOST='evil.example').status_code,400)       
     def test_pages_and_health(self):
         for url in('/','/leadership/','/join/','/accounts/login/','/health/'): self.assertEqual(self.client.get(url).status_code,200,url)
     def test_only_public_appointments_shown(self):
