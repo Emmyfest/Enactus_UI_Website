@@ -39,8 +39,11 @@ def verify_email(request,token):
     try: pk=signing.loads(token,salt='verify',max_age=3*86400)
     except signing.BadSignature: return render(request,'message.html',{'title':'Link invalid or expired','text':'Request a new verification email.'},status=400)
     User.objects.filter(pk=pk).update(email_verified=True)
+    from apps.members.services import link_accepted
+    u=User.objects.filter(pk=pk).first()
+    if u: link_accepted(u)
     return render(request,'message.html',{'title':'Email verified','text':'You can now log in.'})
 @login_required
 def dashboard(request):
-    p=getattr(request.user,'member_profile',None)
-    return render(request,'accounts/dashboard.html',{'roles':request.user.roles.filter(is_active=True),'profile':p,'logins':request.user.logins.all()[:5]})
+    from .dashboards import build
+    return render(request,'accounts/dashboard.html',build(request.user))

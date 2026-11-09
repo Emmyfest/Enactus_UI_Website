@@ -38,6 +38,14 @@ class EvidenceForm(forms.ModelForm):
         c=super().clean()
         if not c.get('url') and not c.get('file'): raise forms.ValidationError('Provide a link or a file.')
         return c
+def review_ok(u,p):
+    from apps.network.models import FacultyAssignment
+    a=FacultyAssignment.objects.filter(user=u)
+    return not a.exists() or a.filter(project=p).exists()
+def _scope(qs,u):
+    from apps.network.models import FacultyAssignment
+    a=FacultyAssignment.objects.filter(user=u)
+    return qs.filter(project__in=a.values('project')) if a.exists() else qs
 def team(u,p): return u.is_authenticated and (can_manage(u,p) or is_member(u,p))
 def _verifiers(perm): return get_user_model().objects.filter(is_active=True).filter(Q(is_superuser=True)|Q(roles__is_active=True,roles__permissions__codename=perm)).distinct()
 def dashboard(request):
@@ -58,10 +66,10 @@ def record_new(request,slug):
 def _ctx(request,r):
     u=request.user; t=team(u,r.project)
     return {'r':r,'evidence':r.evidence.all() if (t or u.has_perm('impact.verify_impact')) else [],'can_edit':r.status in wf.EDITABLE and u.is_authenticated and (r.reporting_officer_id==u.pk or can_manage(u,r.project)),
-      'can_review':u.has_perm('impact.verify_impact') and r.status in('submitted','under_review') and r.reporting_officer_id!=u.pk,'can_evidence':t and r.status in('draft','requires_correction','submitted','under_review'),'form':EvidenceForm()}
+      'can_review':u.has_perm('impact.verify_impact') and review_ok(u,r.project) and r.status in('submitted','under_review') and r.reporting_officer_id!=u.pk,'can_evidence':t and r.status in('draft','requires_correction','submitted','under_review'),'form':EvidenceForm()}
 def record_detail(request,pk):
     r=get_object_or_404(ImpactRecord.objects.select_related('project'),pk=pk); u=request.user
-    if not ((r.status=='approved' and r.project.is_public) or team(u,r.project) or u.has_perm('impact.verify_impact')): raise Http404
+    if not ((r.status=='approved' and r.project.is_public) or team(u,r.project) or (u.has_perm('impact.verify_impact') and review_ok(u,r.project))): raise Http404
     return render(request,'impact/record.html',_ctx(request,r))
 @login_required
 def record_edit(request,pk):
@@ -79,7 +87,7 @@ def _apply(request,model,pk,perm_review,url_name,snap=False):
         owner=o.reporting_officer_id if hasattr(o,'reporting_officer_id') else o.submitted_by_id
         if to=='submitted':
             if not(owner==request.user.pk or can_manage(request.user,o.project)): raise PermissionDenied
-        elif not request.user.has_perm(perm_review) or owner==request.user.pk: raise PermissionDenied
+        elif not request.user.has_perm(perm_review) or owner==request.user.pk or not review_ok(request.user,o.project): raise PermissionDenied
         if not wf.allowed(o.status,to): messages.error(request,'That change is not allowed from the current status.'); return o
         if to in wf.NEED_NOTE and not note: messages.error(request,'A note is required.'); return o
         o.status=to
@@ -102,7 +110,7 @@ def review_queue(request):
     u=request.user
     if not(u.has_perm('impact.verify_impact') or u.has_perm('impact.review_report')): raise PermissionDenied
     st=['submitted','under_review']
-    return render(request,'impact/queue.html',{'records':ImpactRecord.objects.filter(status__in=st).select_related('project') if u.has_perm('impact.verify_impact') else [],'reports':ProjectReport.objects.filter(status__in=st).select_related('project') if u.has_perm('impact.review_report') else []})
+    return render(request,'impact/queue.html',{'records':_scope(ImpactRecord.objects.filter(status__in=st).select_related('project'),u) if u.has_perm('impact.verify_impact') else [],'reports':_scope(ProjectReport.objects.filter(status__in=st).select_related('project'),u) if u.has_perm('impact.review_report') else []})
 @login_required
 @require_POST
 def evidence_add(request,pk):
@@ -122,8 +130,8 @@ def report_new(request,slug):
 @login_required
 def report_detail(request,pk):
     r=get_object_or_404(ProjectReport.objects.select_related('project'),pk=pk); u=request.user
-    if not(team(u,r.project) or u.has_perm('impact.review_report')): raise Http404
-    return render(request,'impact/report.html',{'r':r,'can_submit':r.status in wf.EDITABLE and(r.submitted_by_id==u.pk or can_manage(u,r.project)),'can_review':u.has_perm('impact.review_report') and r.status in('submitted','under_review') and r.submitted_by_id!=u.pk})
+    if not(team(u,r.project) or (u.has_perm('impact.review_report') and review_ok(u,r.project))): raise Http404
+    return render(request,'impact/report.html',{'r':r,'can_submit':r.status in wf.EDITABLE and(r.submitted_by_id==u.pk or can_manage(u,r.project)),'can_review':u.has_perm('impact.review_report') and review_ok(u,r.project) and r.status in('submitted','under_review') and r.submitted_by_id!=u.pk})
 @login_required
 @require_POST
 def report_action(request,pk): _apply(request,ProjectReport,pk,'impact.review_report','reports'); return redirect('report_detail',pk=pk)

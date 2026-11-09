@@ -1,6 +1,6 @@
 from django.contrib import admin
-from .models import AuditLog,SiteSetting
-admin.site.register(SiteSetting)
+from .models import AuditLog,MediaAsset,SiteSetting
+admin.site.register([SiteSetting,MediaAsset])
 @admin.register(AuditLog)
 class AuditAdmin(admin.ModelAdmin):
     list_display=('at','actor','action','target'); list_filter=('action',); search_fields=('action','target','detail')

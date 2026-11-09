@@ -1610,3 +1610,9 @@ html:not([data-theme=dark]) .eyebrow,html:not([data-theme=dark]) .red{color:#a37
 .brand{min-width:0;flex-shrink:0}.brand .wordmark{margin-left:12px;font-size:.84rem}
 .nav a{padding:9px 7px;font-size:.72rem}
 @media(max-width:1100px){.brand .wordmark{font-size:.74rem;margin-left:6px}}
+
+details.staff{position:relative}details.staff summary{cursor:pointer;list-style:none;padding:9px 7px;font-size:.72rem;font-weight:700;letter-spacing:.04em}
+details.staff>div{position:absolute;right:0;top:100%;min-width:210px;padding:10px;border-radius:14px;background:var(--bg);border:1px solid var(--line);display:grid;gap:2px;z-index:60}
+details.staff>div a,details.staff>div button{text-align:left;padding:8px;font-size:.8rem;background:none;border:0;color:inherit;cursor:pointer;font-weight:600}
+.footlinks{display:flex;flex-wrap:wrap;gap:6px 18px;justify-content:center;margin-bottom:10px}.footlinks a{font-size:.78rem;color:var(--muted)}
+textarea{width:100%;border-radius:12px}

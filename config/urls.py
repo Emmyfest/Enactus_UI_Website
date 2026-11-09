@@ -4,9 +4,15 @@ from django.contrib import admin
 from django.urls import include, path
 from apps.accounts import views as acc
 from apps.core import views as core
+from apps.academy import views as ac
 from apps.comms import views as com
+from apps.opportunities import views as opp
+from apps.partnerships import views as par
 from apps.events import views as ev
+from apps.documents import views as doc
 from apps.executives import views as exe
+from apps.finance import views as fin
+from apps.network import views as net
 from apps.impact import views as imp
 from apps.projects import views as pr
 from apps.members import views as mem
@@ -19,7 +25,19 @@ urlpatterns=[
  path('accounts/verify/<str:token>/',acc.verify_email,name='verify_email'),
  path('accounts/',include('django.contrib.auth.urls')),
  path('dashboard/',acc.dashboard,name='dashboard'),
+ path('recruit/',mem.recruit,name='recruit'),
  path('join/',mem.apply,name='apply'),
+ path('recruit/status/',mem.status,name='application_status'),
+ path('applications/export.csv',mem.applications_export,name='applications_export'),
+ path('members/',mem.members_list,name='members_list'),
+ path('members/export.csv',mem.members_export,name='members_export'),
+ path('documents/',doc.listing,name='documents'),
+ path('documents/upload/',doc.upload,name='document_upload'),
+ path('documents/<int:pk>/',doc.detail,name='document'),
+ path('documents/<int:pk>/version/',doc.new_version,name='document_version'),
+ path('documents/<int:pk>/download/',doc.download,name='document_download'),
+ path('documents/<int:pk>/download/<int:number>/',doc.download,name='document_download_version'),
+ path('documents/<int:pk>/archive/',doc.archive,name='document_archive'),
  path('applications/',mem.review,name='review'),
  path('applications/<int:pk>/decide/',mem.decide,name='decide'),
  path('leadership/',exe.leadership,name='leadership'),
@@ -29,6 +47,9 @@ urlpatterns=[
  path('tasks/<int:pk>/status/',pr.task_status,name='task_status'),
  path('events/',ev.event_list,name='event_list'),
  path('events/<slug:slug>/',ev.event_detail,name='event_detail'),
+ path('events/<slug:slug>/qr.svg',ev.qr_svg,name='event_qr'),
+ path('events/<slug:slug>/checkin/control/',ev.checkin_control,name='checkin_control'),
+ path('events/<slug:slug>/checkin/<str:token>/',ev.qr_checkin,name='qr_checkin'),
  path('events/<slug:slug>/register/',ev.register,name='event_register'),
  path('events/<slug:slug>/checkin/',ev.checkin,name='checkin'),
  path('events/<slug:slug>/attendance/<int:pk>/remove/',ev.remove_attendance,name='attendance_remove'),
@@ -43,6 +64,49 @@ urlpatterns=[
  path('impact/projects/<slug:slug>/reports/new/',imp.report_new,name='report_new'),
  path('impact/reports/<int:pk>/',imp.report_detail,name='report_detail'),
  path('impact/reports/<int:pk>/action/',imp.report_action,name='report_action'),
+ path('finance/',fin.home,name='finance'),
+ path('finance/new/',fin.entry_new,name='finance_new'),
+ path('finance/<int:pk>/',fin.entry_detail,name='finance_entry'),
+ path('finance/<int:pk>/edit/',fin.entry_edit,name='finance_edit'),
+ path('finance/<int:pk>/action/',fin.entry_action,name='finance_action'),
+ path('alumni/',net.alumni_directory,name='alumni'),
+ path('alumni/me/',net.alumni_me,name='alumni_me'),
+ path('alumni/mentors/',net.mentors,name='mentors'),
+ path('advisors/',net.advisors,name='advisors'),
+ path('faculty/',net.faculty_portal,name='faculty'),
+ path('gallery/',core.gallery,name='gallery'),
+ path('library/',core.library,name='library'),
+ path('library/<int:pk>/replace/',core.media_replace,name='media_replace'),
+ path('library/<int:pk>/delete/',core.media_delete,name='media_delete'),
+ path('library/<int:pk>/toggle/',core.media_toggle,name='media_toggle'),
+ path('academy/',ac.course_list,name='courses'),
+ path('academy/certificate/<str:code>/',ac.certificate,name='certificate'),
+ path('academy/record/<int:pk>/',ac.record,name='course_record'),
+ path('academy/<slug:slug>/',ac.course_detail,name='course'),
+ path('academy/<slug:slug>/enrol/',ac.enrol,name='course_enrol'),
+ path('academy/<slug:slug>/resources/<int:pk>/done/',ac.mark,name='course_mark'),
+ path('academy/<slug:slug>/manage/',ac.manage,name='course_manage'),
+ path('opportunities/',opp.listing,name='opportunities'),
+ path('opportunities/<int:pk>/',opp.detail,name='opportunity'),
+ path('partners/',par.partners,name='partners'),
+ path('contact/',par.contact,name='contact'),
+ path('partnerships/enquiries/',par.enquiries,name='enquiries'),
+ path('partnerships/enquiries/<int:pk>/handled/',par.enquiry_handled,name='enquiry_handled'),
+ path('partnerships/crm/',par.crm,name='crm'),
+ path('partnerships/crm/<int:pk>/',par.crm_detail,name='crm_detail'),
+ path('leadership/handover/',exe.handover_home,name='handover'),
+ path('leadership/handover/new/',exe.handover_new,name='handover_new'),
+ path('leadership/handover/<int:pk>/',exe.handover_detail,name='handover_detail'),
+ path('leadership/handover/<int:pk>/submit/',exe.handover_submit,name='handover_submit'),
+ path('leadership/handover/<int:pk>/accept/',exe.handover_accept,name='handover_accept'),
+ path('leadership/transition/',exe.transition,name='transition'),
+ path('search/',core.search,name='search'),
+ path('privacy/',core.privacy,name='privacy'),
+ path('terms/',core.terms,name='terms'),
+ path('tasks/<int:pk>/',pr.task_detail,name='task_detail'),
+ path('tasks/<int:pk>/comment/',pr.comment_add,name='comment_add'),
+ path('tasks/<int:pk>/attach/',pr.attach_add,name='attach_add'),
+ path('tasks/attachments/<int:pk>/download/',pr.attach_download,name='attach_download'),
  path('news/',com.announcements,name='news'),
  path('news/new/',com.announce,name='announce'),
  path('notifications/',com.notifications,name='notifications'),

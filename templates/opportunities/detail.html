@@ -1,0 +1,4 @@
+{% extends 'base.html' %}{% block content %}<div class="eyebrow">{{ o.get_category_display }} · {{ o.state }}</div><h1 class="h2">{{ o.name }}</h1>
+<div class="glass card"><p>Organiser: <strong>{{ o.organiser }}</strong>{% if o.deadline %} · Deadline: <strong>{{ o.deadline }}</strong>{% endif %}{% if o.funding_amount %} · Funding: {{ o.funding_amount }}{% endif %}</p><p>{{ o.description|linebreaksbr }}</p>
+{% if o.eligibility %}<div class="eyebrow">Eligibility</div><p>{{ o.eligibility|linebreaksbr }}</p>{% endif %}{% if o.required_documents %}<div class="eyebrow">Required documents</div><p>{{ o.required_documents|linebreaksbr }}</p>{% endif %}
+{% if o.is_open and o.application_url %}<a class="btn primary" href="{{ o.application_url }}" rel="noopener">Apply</a>{% elif not o.is_open %}<p><strong>Applications are closed.</strong></p>{% endif %}</div>{% endblock %}

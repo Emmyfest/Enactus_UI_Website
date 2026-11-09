@@ -1,0 +1,1 @@
+{% extends 'base.html' %}{% block content %}<h1 class="h2">Available mentors</h1><div class="cards">{% for a in people %}<div class="card glass"><div class="num">{{ a.industry }}</div><h3 class="h3">{{ a.user.full_name }}</h3><p>{{ a.skills|truncatechars:140 }}</p></div>{% empty %}<div class="glass card"><p>No mentors have opted in yet.</p></div>{% endfor %}</div>{% endblock %}

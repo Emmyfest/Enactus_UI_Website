@@ -1,0 +1,9 @@
+{% extends 'base.html' %}{% block content %}<div class="glass card" style="max-width:640px;margin:auto"><div class="eyebrow">Application status</div><h1 class="h2">Check my application</h1>
+<form method="post" class="campaign-form">{% csrf_token %}{{ form.as_p }}<button class="btn primary" type="submit">Check</button></form>
+{% if a %}<hr style="border-color:var(--line);margin:20px 0"><p class="note">Reference {{ a.reference }} · {{ a.full_name }}</p>
+{% if a.status == 'pending' %}<h3 class="h3">Received</h3><p>Your application is waiting to be reviewed.</p>
+{% elif a.status == 'shortlisted' %}<h3 class="h3">Shortlisted</h3><p>You have been shortlisted. Interview details will appear here.</p>
+{% elif a.status == 'interview' %}<h3 class="h3">Interview invitation</h3><p><strong>{{ a.interview_at|date:"l d M Y, H:i" }}</strong></p>
+{% elif a.status == 'accepted' %}<h3 class="h3">Congratulations, you have been admitted</h3>{% if onboarding %}<p>{{ onboarding|linebreaksbr }}</p>{% else %}<p>The executive team will share your next steps.</p>{% endif %}<p>Register an account with this email address and verify it to activate your member dashboard.</p>
+{% else %}<h3 class="h3">Not successful this time</h3><p>Thank you for applying. We encourage you to apply again in a future recruitment.</p>{% endif %}
+{% if a.applicant_message %}<div class="eyebrow">Message from the team</div><p>{{ a.applicant_message|linebreaksbr }}</p>{% endif %}{% endif %}</div>{% endblock %}

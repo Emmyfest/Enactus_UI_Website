@@ -10,15 +10,23 @@
   <div class="logo"><img src="{% static 'images/branding/ui.png' %}" alt="University of Ibadan" onerror="this.parentElement.style.display='none'"></div>
   <div class="logo"><img src="{% static 'images/branding/enactus.png' %}" alt="Enactus" onerror="this.parentElement.style.display='none'"></div>
   <span class="wordmark">ENACTUS&nbsp; UNIVERSITY&nbsp; OF&nbsp; IBADAN</span></a>
- <nav class="nav"><a href="{% url 'home' %}">Home</a><a href="{% url 'leadership' %}">Leadership</a><a href="{% url 'project_list' %}">Projects</a><a href="{% url 'event_list' %}">Events</a><a href="{% url 'impact' %}">Impact</a><a href="{% url 'news' %}">News</a><a href="{% url 'apply' %}">Join</a>
-  {% if perms.impact.verify_impact or perms.impact.review_report %}<a href="{% url 'impact_queue' %}">Reviews</a>{% endif %}{% if perms.members.review_application %}<a href="{% url 'review' %}">Applications</a>{% endif %}
-  {% if user.is_authenticated %}<a href="{% url 'notifications' %}">Alerts{% if unread_count %} ({{ unread_count }}){% endif %}</a><a href="{% url 'dashboard' %}">Dashboard</a>
-   <form method="post" action="{% url 'logout' %}" style="display:inline">{% csrf_token %}<button class="tab" type="submit">Log out</button></form>
+ <nav class="nav"><a href="{% url 'project_list' %}">Projects</a><a href="{% url 'event_list' %}">Events</a><a href="{% url 'courses' %}">Learn</a><a href="{% url 'opportunities' %}">Opportunities</a><a href="{% url 'impact' %}">Impact</a><a href="{% url 'recruit' %}">Join</a><a href="{% url 'search' %}">Search</a>
+  {% if user.is_authenticated %}<details class="staff"><summary>Account{% if unread_count %} ({{ unread_count }}){% endif %}</summary><div>
+   <a href="{% url 'dashboard' %}">Dashboard</a><a href="{% url 'notifications' %}">Alerts{% if unread_count %} ({{ unread_count }}){% endif %}</a><a href="{% url 'alumni_me' %}">My alumni profile</a>
+   {% if perms.impact.verify_impact or perms.impact.review_report %}<a href="{% url 'impact_queue' %}">Reviews</a>{% endif %}
+   {% if perms.members.review_application %}<a href="{% url 'review' %}">Applications</a>{% endif %}
+   {% if perms.members.view_memberprofile %}<a href="{% url 'members_list' %}">Members</a>{% endif %}
+   {% if perms.finance.view_finance %}<a href="{% url 'finance' %}">Finance</a>{% endif %}
+   {% if perms.core.manage_media %}<a href="{% url 'library' %}">Media library</a>{% endif %}
+   {% if perms.partnerships.manage_partnerships %}<a href="{% url 'enquiries' %}">Enquiries</a><a href="{% url 'crm' %}">Partner CRM</a>{% endif %}
+   {% if perms.executives.view_administration or perms.executives.prepare_handover or perms.executives.accept_handover %}<a href="{% url 'handover' %}">Handover</a>{% endif %}
+   {% if user.faculty_profile %}<a href="{% url 'faculty' %}">Faculty portal</a>{% endif %}
+   <form method="post" action="{% url 'logout' %}">{% csrf_token %}<button type="submit">Log out</button></form></div></details>
   {% else %}<a href="{% url 'login' %}">Log in</a>{% endif %}</nav>
  <div class="header-actions"><button class="theme-toggle" id="themeToggle" aria-label="Toggle light and dark mode"><span>☀</span><span>☾</span><i></i></button></div>
 </div></header>
 <main class="section"><div class="container">
 {% for m in messages %}<div class="glass card" role="status" style="margin-bottom:14px">{{ m }}</div>{% endfor %}
 {% block content %}{% endblock %}</div></main>
-<footer class="footer-bottom">© Enactus University of Ibadan. Institutional platform.</footer>
+<footer class="footer-bottom"><div class="footlinks"><a href="{% url 'news' %}">News</a><a href="{% url 'gallery' %}">Gallery</a><a href="{% url 'alumni' %}">Alumni</a><a href="{% url 'advisors' %}">Advisors</a><a href="{% url 'leadership' %}">Leadership</a><a href="{% url 'documents' %}">Documents</a><a href="{% url 'partners' %}">Partners</a><a href="{% url 'contact' %}">Contact</a><a href="{% url 'privacy' %}">Privacy</a><a href="{% url 'terms' %}">Terms</a></div>© Enactus University of Ibadan. Institutional platform.</footer>
 <script src="{% static 'js/app.js' %}"></script></body></html>

@@ -6,3 +6,4 @@ staticfiles/
 media/*
 !media/.gitkeep
 .venv/
+private_media/

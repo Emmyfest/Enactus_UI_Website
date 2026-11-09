@@ -1,0 +1,3 @@
+{% extends 'base.html' %}{% block content %}<div class="eyebrow">Faculty portal</div><h1 class="h2">Assigned projects</h1>
+<div class="glass card">{% for a in projects %}<p><a href="{% url 'project_detail' a.project.slug %}">{{ a.project.name }}</a> · {{ a.project.get_stage_display }}</p>{% empty %}<p>No projects have been assigned to you yet.</p>{% endfor %}</div>
+<div class="glass card" style="margin-top:16px"><div class="eyebrow">Awaiting your review</div>{% for r in records %}<p><a href="{% url 'impact_record' r.pk %}">{{ r }}</a></p>{% endfor %}{% for r in reports %}<p><a href="{% url 'report_detail' r.pk %}">{{ r }}</a></p>{% endfor %}{% if not records and not reports %}<p>Nothing waiting.</p>{% endif %}</div>{% endblock %}

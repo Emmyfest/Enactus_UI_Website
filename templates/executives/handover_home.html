@@ -1,0 +1,5 @@
+{% extends 'base.html' %}{% block content %}<div class="eyebrow">Leadership transition</div><h1 class="h2">Handover</h1>
+<p class="lead">Current administration: <strong>{{ current|default:"none" }}</strong>. A term can be closed only after its handover is accepted. Nothing is ever deleted.</p>
+{% if perms.executives.prepare_handover and current %}<form method="post" action="{% url 'handover_new' %}">{% csrf_token %}<button class="btn primary" type="submit">Open or continue the handover pack</button></form>{% endif %}
+{% if perms.executives.manage_transition %}<p><a class="btn" href="{% url 'transition' %}">Start a new administration</a></p>{% endif %}
+<div class="glass card" style="margin-top:16px"><table class="tbl"><tr><th>Administration</th><th>Status</th><th>Prepared by</th></tr>{% for p in packs %}<tr><td><a href="{% url 'handover_detail' p.pk %}">{{ p.administration }}</a></td><td>{{ p.get_status_display }}</td><td>{{ p.prepared_by }}</td></tr>{% empty %}<tr><td colspan="3">No handover packs yet.</td></tr>{% endfor %}</table></div>{% endblock %}

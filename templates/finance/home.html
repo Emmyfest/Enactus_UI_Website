@@ -1,0 +1,7 @@
+{% extends 'base.html' %}{% block content %}<div class="eyebrow">Restricted</div><h1 class="h2">Financial records</h1>
+<p class="lead">Totals count approved entries only. {{ pending }} entr{{ pending|pluralize:"y,ies" }} awaiting approval are not included.</p>
+{% if perms.finance.record_finance %}<p><a class="btn primary" href="{% url 'finance_new' %}">New entry</a></p>{% endif %}
+<div class="stats" style="margin:16px 0">{% for l,v in totals %}<div class="stat glass"><b style="font-size:2rem">{{ v|floatformat:2 }}</b><span>{{ l }}</span></div>{% endfor %}</div>
+<div class="glass card" style="overflow-x:auto"><div class="eyebrow">By project (approved)</div><table class="tbl"><tr><th>Project</th><th>Budgeted</th><th>Expenditure</th><th>Income</th><th>Commitments</th><th>Budget minus expenditure</th></tr>
+{% for r in rows %}<tr><td>{{ r.name }}</td><td>{{ r.budget|floatformat:2 }}</td><td>{{ r.expense|floatformat:2 }}</td><td>{{ r.income|floatformat:2 }}</td><td>{{ r.commitment|floatformat:2 }}</td><td>{{ r.variance|floatformat:2 }}</td></tr>{% empty %}<tr><td colspan="6">No approved entries yet.</td></tr>{% endfor %}</table></div>
+<div class="glass card" style="margin-top:16px;overflow-x:auto"><div class="eyebrow">Recent entries</div><table class="tbl">{% for e in entries %}<tr><td><a href="{% url 'finance_entry' e.pk %}">{{ e.description }}</a></td><td>{{ e.get_kind_display }}</td><td>{{ e.amount }}</td><td>{{ e.get_status_display }}</td></tr>{% empty %}<tr><td>None yet.</td></tr>{% endfor %}</table></div>{% endblock %}

@@ -1,0 +1,2 @@
+{% extends 'base.html' %}{% block content %}<div class="glass card" style="max-width:520px;margin:auto"><div class="eyebrow">Check in</div><h1 class="h2">{{ e.title }}</h1><p>Signed in as {{ user.full_name }}. Confirm to record your attendance.</p>
+<form method="post">{% csrf_token %}<button class="btn primary" type="submit">Confirm check-in</button></form></div>{% endblock %}

@@ -21,3 +21,10 @@ class SiteSetting(models.Model):
     def __str__(self): return self.key
 def setting(key,default='Awaiting verification: this content has not been supplied yet.'):
     s=SiteSetting.objects.filter(key=key,is_public=True).first(); return s.value if s and s.value else default
+class MediaAsset(models.Model):
+    CAT=[(c,c.title()) for c in('team','executive','faculty','alumni','project','event','award','partner','training','other')]
+    file=models.ImageField(upload_to='library/'); title=models.CharField(max_length=150); alt_text=models.CharField(max_length=250); caption=models.CharField(max_length=300,blank=True)
+    category=models.CharField(max_length=10,choices=CAT,default='other',db_index=True); is_public=models.BooleanField(default=False); is_featured=models.BooleanField(default=False)
+    uploaded_by=models.ForeignKey(settings.AUTH_USER_MODEL,null=True,on_delete=models.SET_NULL,related_name='+'); created=models.DateTimeField(auto_now_add=True)
+    class Meta: ordering=['-is_featured','-created']; permissions=[('manage_media','Can manage the media library')]
+    def __str__(self): return self.title

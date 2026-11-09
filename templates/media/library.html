@@ -1,0 +1,9 @@
+{% extends 'base.html' %}{% block content %}<h1 class="h2">Media library</h1>
+<div class="glass card"><div class="eyebrow">Upload</div><form method="post" enctype="multipart/form-data" class="campaign-form">{% csrf_token %}{{ form.as_p }}<button class="btn primary" type="submit">Upload</button></form></div>
+<div class="tabs" style="margin-top:16px"><a class="tab{% if not current %} on{% endif %}" href="{% url 'library' %}">All</a>{% for v,l in cats %}<a class="tab{% if current == v %} on{% endif %}" href="?category={{ v }}">{{ l }}</a>{% endfor %}</div>
+<div class="cards">{% for m in items %}<div class="card glass"><img src="{{ m.file.url }}" alt="{{ m.alt_text }}" loading="lazy" style="width:100%;border-radius:12px"><h3 class="h3">{{ m.title }}</h3><p>{{ m.category|title }} · {% if m.is_public %}public{% else %}private{% endif %}{% if m.is_featured %} · featured{% endif %}</p>
+<form method="post" action="{% url 'media_toggle' m.pk %}" style="display:inline">{% csrf_token %}<input type="hidden" name="field" value="is_featured"><button class="tab" type="submit">Toggle featured</button></form>
+<form method="post" action="{% url 'media_toggle' m.pk %}" style="display:inline">{% csrf_token %}<input type="hidden" name="field" value="is_public"><button class="tab" type="submit">Toggle public</button></form>
+<form method="post" action="{% url 'media_replace' m.pk %}" enctype="multipart/form-data">{% csrf_token %}<input type="file" name="file" accept="image/*" required><button class="tab" type="submit">Replace</button></form>
+<form method="post" action="{% url 'media_delete' m.pk %}" onsubmit="return confirm('Delete this image permanently?')">{% csrf_token %}<input type="hidden" name="confirm" value="yes"><button class="tab" type="submit">Delete</button></form></div>
+{% empty %}<div class="glass card"><p>The library is empty.</p></div>{% endfor %}</div>{% endblock %}

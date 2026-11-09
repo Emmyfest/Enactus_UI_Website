@@ -15,10 +15,10 @@ def with_perm(u,*codes):
 class ProjectTests(TestCase):
     def setUp(self):
         self.mgr,self.mem,self.out=mk('mgr@x.org'),mk('mem@x.org'),mk('out@x.org')
-        self.pub=Project.objects.create(name='Pub',slug='pub',is_public=True,manager=self.mgr); self.priv=Project.objects.create(name='Priv',slug='priv',manager=self.mgr)
+        self.pub=Project.objects.create(name='Pub',slug='pub',is_public=True,manager=self.mgr); self.priv=Project.objects.create(name='Hiddenproj',slug='priv',manager=self.mgr)
         ProjectMember.objects.create(project=self.priv,user=self.mem); ProjectMember.objects.create(project=self.pub,user=self.mem)
     def test_public_list_hides_private(self):
-        r=self.client.get('/projects/'); self.assertContains(r,'Pub'); self.assertNotContains(r,'Priv')
+        r=self.client.get('/projects/'); self.assertContains(r,'Pub'); self.assertNotContains(r,'Hiddenproj')
     def test_private_detail_only_for_team(self):
         self.assertEqual(self.client.get('/projects/priv/').status_code,404)
         self.client.force_login(self.out); self.assertEqual(self.client.get('/projects/priv/').status_code,404)
@@ -67,9 +67,9 @@ class EventTests(TestCase):
 class CommsTests(TestCase):
     def test_role_targeting_notifies_only_that_role(self):
         poster,inrole,outside=mk('p@x.org'),mk('in@x.org'),mk('out@x.org'); with_perm(poster,'add_announcement'); tr=Role.objects.create(name='Tgt',slug='tgt'); inrole.roles.add(tr)
-        self.client.force_login(poster); self.client.post('/news/new/',{'title':'Hi','body':'b','audience':'roles','roles':[tr.pk]})
+        self.client.force_login(poster); self.client.post('/news/new/',{'title':'Zq targeted notice','body':'b','audience':'roles','roles':[tr.pk]})
         self.assertEqual(Notification.objects.filter(user=inrole).count(),1); self.assertEqual(Notification.objects.filter(user=outside).count(),0)
-        self.client.force_login(outside); self.assertNotContains(self.client.get('/news/'),'Hi'); self.client.force_login(inrole); self.assertContains(self.client.get('/news/'),'Hi')
+        self.client.force_login(outside); self.assertNotContains(self.client.get('/news/'),'Zq targeted'); self.client.force_login(inrole); self.assertContains(self.client.get('/news/'),'Zq targeted')
     def test_anonymous_sees_only_public_and_cannot_post(self):
         Announcement.objects.create(title='Pubn',body='x',audience='public'); Announcement.objects.create(title='Memn',body='x',audience='members')
         r=self.client.get('/news/'); self.assertContains(r,'Pubn'); self.assertNotContains(r,'Memn'); self.assertEqual(self.client.get('/news/new/').status_code,302)

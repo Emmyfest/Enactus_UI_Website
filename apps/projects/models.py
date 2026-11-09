@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.db import models
 from django.utils import timezone
+from apps.documents.models import PrivateStorage
 U=settings.AUTH_USER_MODEL
 STAGES=[(s,s.replace('_',' ').title()) for s in('ideation','research','feasibility','business_model','prototype','pilot','implementation','monitoring','scaling','completed','suspended','archived')]
 class ProjectCategory(models.Model):
@@ -31,3 +32,10 @@ class Task(models.Model):
     class Meta: ordering=['due','-created']
     @property
     def is_overdue(self): return bool(self.due and self.status!='done' and self.due<timezone.localdate())
+
+class TaskComment(models.Model):
+    task=models.ForeignKey(Task,on_delete=models.CASCADE,related_name='comments'); author=models.ForeignKey(U,on_delete=models.PROTECT,related_name='+'); body=models.TextField(max_length=2000); created=models.DateTimeField(auto_now_add=True)
+    class Meta: ordering=['created']
+class TaskAttachment(models.Model):
+    task=models.ForeignKey(Task,on_delete=models.CASCADE,related_name='attachments'); file=models.FileField(upload_to='task_files/',storage=PrivateStorage())
+    original_name=models.CharField(max_length=255); size=models.PositiveBigIntegerField(); uploaded_by=models.ForeignKey(U,on_delete=models.PROTECT,related_name='+'); created=models.DateTimeField(auto_now_add=True)
